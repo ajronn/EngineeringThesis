@@ -20,6 +20,8 @@ Funkcjonalności:
 
 **_przetwarzanie danych_** - aplikacja automatycznie przeliczy wprowadzone przez Ciebie dane i uzupełni brakujące pola
 
+**_podsumowanie_** - aplikacja automatycznie podsumuje twoj okres rozliczeniowy
+
 **_wystawienie faktury VAT_** - aplikacja wygeneruje fakturę VAT w postaci PDF'a lub DOCX
 
 **_kalkulator_** - aplikacja posiada wbudowany kalkulator, który zawsze masz pod ręką
