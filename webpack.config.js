@@ -37,22 +37,22 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
-                test: /\.(gif|png|jpe?g|svg)$/i,
+                test: /\.(jpg|png|jpeg)$/,
                 use: [
-                    'file-loader',
-                    {
-                        loader: 'image-webpack-loader',
-                        options: {
-                            bypassOnDebug: true, // webpack@1.x
-                            disable: true, // webpack@2.x and newer
-                        },
-                    },
-                ],
+                    'file-loader'
+                ]
+            },
+            {
+                test: /\.(html)$/,
+                use: [
+                    'html-loader'
+                ]
             }
         ]
     },
     devServer: {
         historyApiFallback: true,
+        port: 3000
     },
     resolve: {
         modules: ["src", "node_modules"],
