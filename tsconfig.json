@@ -12,9 +12,25 @@
         "sourceMap": true,
         "typeRoots": [
             "./node_modules/@types"
-        ]
+        ],
+        "baseUrl": "./src",
+        "paths": {
+            "/modules": [
+                "modules"
+            ],
+            "/ui": [
+                "ui"
+            ],
+            "/shared/*": [
+                "shared/*"
+            ],
+            "/styles/*": [
+                "styles/*"
+            ]
+        }
     },
     "include": [
-        "./src/**/*"
+        "./src/",
+        "declarations.d.ts"
     ]
 }
