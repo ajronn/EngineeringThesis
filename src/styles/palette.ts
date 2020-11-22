@@ -8,5 +8,6 @@ export enum Palette {
     ebonyLight = '#5d675b',
     ebony = '#254441',
     black = '#090c08',
-    white = '#f6f2ff'
+    white = '#f6f2ff',
+    red = 'rgb(208,55,73)'
 }

@@ -1,0 +1,28 @@
+@import "styles/palette";
+
+.navbar {
+    width: 100%;
+    height: 80px;
+    background: rgb(0, 0, 0, 0.1);
+    display: grid;
+    align-items: center;
+    font-weight: 900;
+
+    ul {
+        list-style-type: none;
+    }
+
+    li {
+        display: inline-block;
+        margin-right: 20px;
+        cursor: pointer;
+    }
+
+    ul:first-child {
+        margin-left: 50px;
+    }
+
+    .active {
+        color: $red;
+    }
+}

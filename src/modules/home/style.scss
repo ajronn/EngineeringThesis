@@ -1,0 +1,25 @@
+.home {
+    display: grid;
+    grid-template-areas: "content graphics";
+    grid-template-columns: 1.5fr 2fr;
+}
+
+.content {
+    grid-area: content;
+    background: red;
+    width: 100%;
+    height: calc(100vh - 80px);
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.graphic {
+    grid-area: graphics;
+    background: blue;
+    width: 100%;
+    height: calc(100vh - 80px);
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
