@@ -14,7 +14,7 @@ export const Navbar = ({ items }: Props) => {
     return (
         <div className={csx.navbar}>
             <ul>
-                {items.map(e => <li className={`${e.active && csx.active}`}>{e.name}</li>)}
+                {items.map((e, index) => <li key={index} className={`${e.active && csx.active}`}>{e.name}</li>)}
             </ul>
         </div>
     )

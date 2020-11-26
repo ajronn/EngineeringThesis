@@ -27,8 +27,14 @@
             "/styles/*": [
                 "styles/*"
             ],
-            "images/*": [
+            "/images/*": [
                 "ui/images/*"
+            ],
+            "/utiils": [
+                "utils"
+            ],
+            "/utiils/*": [
+                "utils/*"
             ]
         }
     },

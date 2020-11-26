@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import MonumentsProvider from "shared/monuments-provider"
 
 import { Home } from "modules";
 import { Navbar } from "ui";
@@ -12,7 +13,7 @@ export const App = () => {
     ];
 
     return (
-        <>
+        <MonumentsProvider>
             <Navbar items={navItems} />
             <Router>
                 <Switch>
@@ -24,6 +25,6 @@ export const App = () => {
                     </Route>
                 </Switch>
             </Router>
-        </>
+        </MonumentsProvider>
     )
 }
