@@ -1,5 +1,7 @@
 import React, { createContext, useContext } from "react";
 
+import { warmaz } from "utils/warmaz.json"
+
 interface Props {
     children: React.ReactNode
 }
@@ -17,7 +19,7 @@ const Context = createContext(st)
 class MonumentsProvider extends React.Component<Props, STATE> {
 
     readonly state: STATE = {
-        data: [""]
+        data: warmaz
     }
 
     render() {
