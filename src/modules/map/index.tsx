@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import ReactMapGL, { Marker } from 'react-map-gl';
-import { API_KEY } from "utils"
+import { API_KEY, MAP_KEY } from "utils"
+import opencage from 'opencage-api-client';
 
 const SimpleMap = () => {
     const [viewport, setViewport] = useState({
@@ -16,12 +17,18 @@ const SimpleMap = () => {
 
     useEffect(() => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(getPosition);
+            navigator.geolocation.getCurrentPosition(getPosition, () => { }, { enableHighAccuracy: true });
         }
     }, [])
 
+    const search = () => {
+        fetch('https://api.opencagedata.com/geocode/v1/json?q=Bartoszyce%2C%20Ketrzynska%2C%2014&key=fd4a9dad69cc4049a458228d3ee82823')
+            .then(response => response.json())
+            .then(data => console.log(data.results[0].geometry));
+
+    }
+
     const getPosition = (position: any) => {
-        console.log(position.coords.latitude, position.coords.longitude);
         setViewport({
             width: 1200,
             height: 400,
@@ -35,16 +42,19 @@ const SimpleMap = () => {
     }
 
     return (
-        <ReactMapGL
-            {...viewport}
-            mapboxApiAccessToken={API_KEY}
-            onViewportChange={nextViewport => setViewport(nextViewport)}
-        >
-            <Marker latitude={here[0]} longitude={here[1]}>
-                <img src="https://www.flaticon.com/svg/static/icons/svg/684/684908.svg"
-                    height="20" />
-            </Marker>
-        </ReactMapGL>
+        <>
+            <ReactMapGL
+                {...viewport}
+                mapboxApiAccessToken={API_KEY}
+                onViewportChange={nextViewport => setViewport(nextViewport)}
+            >
+                <Marker latitude={here[0]} longitude={here[1]}>
+                    <img src="https://www.flaticon.com/svg/static/icons/svg/684/684908.svg"
+                        height="20" />
+                </Marker>
+            </ReactMapGL>
+            <button onClick={search}>KLIK</button>
+        </>
     );
 }
 

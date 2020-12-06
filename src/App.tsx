@@ -14,7 +14,7 @@ export const App = () => {
 
     return (
         <MonumentsProvider>
-            <Navbar items={navItems} />
+            {/* <Navbar items={navItems} /> */}
             <Router>
                 <Switch>
                     <Route path="/" exact>
