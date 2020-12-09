@@ -15,13 +15,17 @@
         display: inline-block;
         margin-right: 20px;
         cursor: pointer;
+
+        a {
+            color: black;
+
+            &:hover {
+                color: $red;
+            }
+        }
     }
 
     ul:first-child {
         margin-left: 50px;
-    }
-
-    .active {
-        color: $red;
     }
 }

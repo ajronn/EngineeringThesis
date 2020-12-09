@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import csx from "./style.scss"
 
-export interface Props {
-    items: {
-        name: string,
-        active: boolean
-    }[]
+export interface Item {
+    name: string,
+    address: string
 }
 
-export const Navbar = ({ items }: Props) => {
+export const Navbar = () => {
+    const [items, setItems] = useState<Item[]>([
+        { name: "Home", address: "/" },
+        { name: "Map", address: "/map" },
+        { name: "About", address: "/about" },
+        { name: "Contact us", address: "/contact" }
+    ])
 
     return (
         <div className={csx.navbar}>
             <ul>
-                {items.map((e, index) => <li key={index} className={`${e.active && csx.active}`}>{e.name}</li>)}
+                {items.map((e, index) => {
+                    return (
+                        <li
+                            key={index}
+                            style={{ color: "black" }}>
+                            <Link to={e.address}>
+                                {e.name}
+                            </Link>
+                        </li>
+                    )
+                })}
             </ul>
         </div>
     )
