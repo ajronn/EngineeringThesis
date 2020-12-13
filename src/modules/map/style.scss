@@ -3,21 +3,25 @@
     width: 1200px;
 }
 
-.marker {
-    z-index: 1;
-}
-.image {
-    z-index: 10;
-    cursor: pointer;
-}
-.image {
-    .label {
+a {
+    &:hover ~ .label {
         opacity: 1;
         visibility: visible;
     }
 }
 
+img {
+    cursor: pointer;
+}
+
 .label {
+    text-shadow: -3px 0 white, 0 3px white, 3px 0 white, 0 -3px white;
     opacity: 0;
     visibility: hidden;
+    text-align: center;
+    display: table;
+}
+
+input[type="range"] {
+    width: 1000px;
 }

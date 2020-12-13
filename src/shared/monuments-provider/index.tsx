@@ -18,8 +18,12 @@ const Context = createContext(st)
 
 class MonumentsProvider extends React.Component<Props, STATE> {
 
+    filterMonuments() {
+        return warmaz.filter((e: any) => e.number !== "");
+    }
+
     readonly state: STATE = {
-        data: warmaz
+        data: this.filterMonuments()
     }
 
     render() {

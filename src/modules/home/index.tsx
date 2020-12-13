@@ -16,20 +16,19 @@ export const Home = () => {
 
     const fun = () => {
         console.clear()
-        let counter = 2378;
-        // setInterval(() => {
-        //     if (counter < data.length) {
-        //         search(data[counter])
-        //     } counter++;
-        // }, 500);
+        let counter = 4792;
+        setInterval(() => {
+            if (counter < data.length) {
+                search(data[counter])
+            } counter++;
+        }, 500);
         // {
         //     data.map((e: any, index: number) => {
-        //         if (e.id === "PL.1.9.ZIPOZ.NID_N_28_BK.152757") {
+        //         if (e.id === "PL.1.9.ZIPOZ.NID_N_28_BK.166569") {
         //             console.log(index)
         //         }
         //     })
         // }
-        console.log(data.length)
     }
 
     return (
@@ -55,7 +54,7 @@ export const Home = () => {
                     // return <p key={e.id}>{search(e.address)}</p>
                 })
             } */}
-            {/* <button onClick={() => fun()}>KLIK</button> */}
+            <button onClick={() => fun()}>KLIK</button>
         </>
 
     )
