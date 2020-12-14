@@ -18,10 +18,54 @@ img {
     text-shadow: -3px 0 white, 0 3px white, 3px 0 white, 0 -3px white;
     opacity: 0;
     visibility: hidden;
-    text-align: center;
+    text-align: left;
     display: table;
 }
 
 input[type="range"] {
-    width: 1000px;
+    width: 300px;
+}
+
+.modal {
+    width: 350px;
+    height: 600px;
+    background-color: #c4cbca;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.info {
+    background-color: #c4cbca;
+    padding: 5px;
+}
+
+.close {
+    cursor: pointer;
+    height: 40px;
+    width: 350px;
+    background-color: #c4cbca;
+    z-index: 5;
+    text-align: center;
+    border-bottom: 2px solid black;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #9ca1a0;
+    border-radius: 10px;
 }

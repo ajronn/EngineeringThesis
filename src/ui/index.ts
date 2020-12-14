@@ -1,2 +1,6 @@
+export * from "./button"
 export * from "./checkbox"
+export * from "./icon"
+export * from "./modal"
 export * from "./navbar"
+export * from "./point"

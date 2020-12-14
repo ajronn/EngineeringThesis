@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 
-import { warmaz } from "utils/warmaz.json"
+import { warmaz } from "utils/warmaz3.json"
 
 interface Props {
     children: React.ReactNode

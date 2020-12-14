@@ -1,0 +1,15 @@
+.butt {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background-color: #c4cbca;
+    font-size: 15px;
+    font-weight: 400;
+    margin: 5px;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}

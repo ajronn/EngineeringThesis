@@ -17,7 +17,7 @@ export const CheckBox = ({ label, onClick }: Props) => {
     return (
         <div className={csx.container}>
             <input type="checkbox" checked={checked} onChange={handleChecked} onClick={() => onClick(!checked)} />
-            <div>{label.charAt(0).toUpperCase() + label.slice(1)}</div>
+            <span>{label.charAt(0).toUpperCase() + label.slice(1)}</span>
         </div>
 
     )
