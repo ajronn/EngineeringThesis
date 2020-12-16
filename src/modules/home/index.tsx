@@ -9,22 +9,23 @@ import csx from "./style.scss"
 export const Home = () => {
     const { data } = useMonuments();
     const search = (e: any) => {
-        fetch('https://api.opencagedata.com/geocode/v1/json?q=' + e.address.replace(" ", "%2C%20") + "%2C%20warminsko-mazurskie" + '&key=fd4a9dad69cc4049a458228d3ee82823')
+        fetch('https://api.opencagedata.com/geocode/v1/json?q=' + e.address.replace(" ", "%2C%20") + "%2C%20" + e.region + '&key=fd4a9dad69cc4049a458228d3ee82823')
             .then(response => response.json())
             .then(d => console.log(`{"id": "${e.id}", "protect": "${e.protect}", "positionAccuracy": "${e.positionAccuracy}", "name": "${e.name}", "chronology": "${e.chronology}", "fun": "${e.fun}", "document": "${e.document}", "date": "${e.date}", "region": "${e.region}", "district": "${e.district}", "community": "${e.community}", "town": "${e.town}", "street": "${e.street}", "number": "${e.number}", "address": "${e.address}", "lat": "${d.results[0].geometry.lat}", "lng": "${d.results[0].geometry.lng}"},`));
     }
 
     const fun = () => {
         console.clear()
-        let counter = 0;
-        setInterval(() => {
-            if (counter < data.length) {
-                search(data[counter])
-            } counter++;
-        }, 100);
+        let counter = 3437;
+        console.log(data.length)
+        // setInterval(() => {
+        //     if (counter < data.length) {
+        //         search(data[counter])
+        //     } counter++;
+        // }, 100);
         // {
         //     data.map((e: any, index: number) => {
-        //         if (e.id === "PL.1.9.ZIPOZ.NID_N_28_BK.166569") {
+        //         if (e.id === "PL.1.9.ZIPOZ.NID_N_28_BK.148781") {
         //             console.log(index)
         //         }
         //     })

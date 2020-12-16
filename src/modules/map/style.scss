@@ -26,12 +26,30 @@ input[type="range"] {
     width: 300px;
 }
 
-.modal {
+.filtersModal {
     width: 350px;
     height: 600px;
     background-color: #c4cbca;
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.changeHomeModal {
+    width: 350px;
+    height: 200px;
+    background-color: #c4cbca;
+    text-align: center;
+    display: grid;
+    align-items: center;
+
+    Button {
+        padding: 5px;
+        filter: brightness(90%);
+        width: 100px;
+        margin: 0 auto;
+        display: inline;
+        margin: 5px;
+    }
 }
 
 .info {

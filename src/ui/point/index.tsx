@@ -9,7 +9,7 @@ interface Props {
     lat: number,
     lng: number,
     link?: string,
-    label: string
+    label: string[]
 }
 
 export const Point = ({ image, imageHeight, lat, lng, link, label }: Props) => {
@@ -22,7 +22,9 @@ export const Point = ({ image, imageHeight, lat, lng, link, label }: Props) => {
                     height={imageHeight} />
             </a>
             <div className={csx.label}>
-                {label}
+                {label.map((e: string) => {
+                    return <p>{e}</p>
+                })}
             </div>
         </Marker>
     )
