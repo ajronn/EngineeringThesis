@@ -16,15 +16,13 @@ interface Props {
 export const FiltersModal = ({ close, monuments, markers, categories, filters, select }: Props) => {
 
     return (
-        <div>
-            <div onClick={close} >
-                Close
-                    </div>
+        <div className={csx.container} >
+            <div onClick={close} className={csx.close} >x</div>
             <div >
                 <p>Monuments: {markers}/{monuments}</p>
                 <p>Types: {filters}/{categories.length}</p>
             </div>
-            <div>
+            <div className={csx.filters}>
                 {categories.map((e: string, index: number) =>
                     <CheckBox
                         key={index}

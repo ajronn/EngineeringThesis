@@ -1,0 +1,19 @@
+.container {
+    background: #c4cbca;
+    width: 350px;
+    height: 600px;
+    padding: 5px;
+    position: relative;
+}
+
+.filters {
+    overflow-y: scroll;
+    height: 500px;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    cursor: pointer;
+}

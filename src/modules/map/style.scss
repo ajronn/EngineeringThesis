@@ -23,15 +23,7 @@ img {
 }
 
 input[type="range"] {
-    width: 300px;
-}
-
-.filtersModal {
-    width: 350px;
-    height: 600px;
-    background-color: #c4cbca;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    width: 950px;
 }
 
 .changeHomeModal {
@@ -49,25 +41,6 @@ input[type="range"] {
         margin: 0 auto;
         display: inline;
         margin: 5px;
-    }
-}
-
-.info {
-    background-color: #c4cbca;
-    padding: 5px;
-}
-
-.close {
-    cursor: pointer;
-    height: 40px;
-    width: 350px;
-    background-color: #c4cbca;
-    z-index: 5;
-    text-align: center;
-    border-bottom: 2px solid black;
-
-    &:hover {
-        opacity: 0.9;
     }
 }
 
