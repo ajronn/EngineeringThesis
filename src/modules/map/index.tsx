@@ -21,29 +21,29 @@ type MarkerItem = {
     address: string
 }
 
+//typ Zabytek
+type Monument = {
+    name: string,
+    fun: string
+    checked: boolean
+}
+
 export const SimpleMap = () => {
-    const { data } = useMonuments();
+    const { data } = useMonuments(); //baza zabytkow
 
-    const [here, setHere] = useState([0, 0]);
-    const [tmpHere, setTmpHere] = useState([0, 0]);
-    const [markers, setMarkers] = useState<MarkerItem[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
-    const [filters, setFilters] = useState<string[]>([]);
-    const [range, setRange] = useState("10");
-    const [filtersModal, setFiltersModal] = useState(false);
-    const [changeHomeModal, setChangeHomeModal] = useState(false);
+    const [here, setHere] = useState<null | number[]>(null); //aktualna pozycja
+    const [temporaryHere, setTemporaryHere] = useState<null | number[]>(null); //tymczasowa pozycja
+    const [range, setRange] = useState<number>(10); //zasieg szukania zabytkow
+    const [openChangeHomePositionModal, setOpenChangeHomePositionModal] = useState<boolean>(false); //modal zmiany pozycji
+    const [monuments, setMonuments] = useState<Monument[]>([]); //zabytki w promieniu range
+    const [filters, setFilters] = useState<string[]>([]); //unikalne funkcje zabytkow monuments
 
-    const openModalHomePosition = (value: number[]) => {
-        setTmpHere(value);
-        setChangeHomeModal(true);
+    //zmien promien szukania zabytkow
+    const changeRange = (value:string) => {
+        setRange(parseInt(value));
     }
 
-    const changeHomePosition = () => {
-        setHere(tmpHere);
-        handleData(tmpHere[0], tmpHere[1]);
-        setChangeHomeModal(false);
-    }
-
+    //konfiguracja mapy
     const [viewport, setViewport] = useState({
         width: 400,
         height: 400,
@@ -60,8 +60,9 @@ export const SimpleMap = () => {
                 { enableHighAccuracy: true }
             );
         }
-    }, [range])
+    }, [range, here])
 
+    //pobierz aktualna pozycje
     const getPosition = (position: any) => {
         setViewport({
             width: 1200,
@@ -70,35 +71,49 @@ export const SimpleMap = () => {
             longitude: position.coords.longitude,
             zoom: 8,
         })
-        setHere([position.coords.latitude, position.coords.longitude]);
-        handleData(position.coords.latitude, position.coords.longitude);
-    }
-
-    const handleData = (coordsLat: number, coordsLng: number) => {
-        const marks: MarkerItem[] = [];
-        const cats: string[] = [];
-        {
-            data.map((e: any) => {
-                if (calcDistance(e.lat, e.lng, coordsLat, coordsLng) <= parseInt(range)) {
-                    marks.push({ lat: parseFloat(e.lat), lng: parseFloat(e.lng), name: e.name, fun: e.fun, address: e.address });
-                    if (!contain((e.fun + "").toLowerCase(), cats)) {
-                        cats.push((e.fun + "").toLowerCase())
-                    }
-                }
-            })
+        if(here === null) setHere([position.coords.latitude, position.coords.longitude]);
+        if(here === null) {
+            handleData(position.coords.latitude, position.coords.longitude);
+        } else {
+            handleData(here[0], here[1]);
         }
-        setCategories(cats.sort())
-        setMarkers(marks);
     }
 
-    const contain = (value: string, array: string[]): boolean => {
-        for (let i = 0; i < array.length; i++) {
-            if (array[i] === value)
-                return true;
+    //pobierz dane
+    const handleData = (coordsLat: number, coordsLng: number) => {
+        const monuments: Monument[] = [];
+
+        data.map((e:any) => {
+            if(calcDistance(coordsLat,coordsLng, parseFloat(e.lat), parseFloat(e.lng)) <= range){
+                monuments.push({name: e.name, fun: e.fun, checked: false});
+            }
+        })
+
+        makeFilters(monuments);
+    }
+
+    //stworz liste filtrow na podstawie zabytkow
+    const makeFilters = (monuments: Monument[]) => {
+        const temporaryFilters:string[] = [];
+
+        monuments.map((e:Monument) => {
+            if(!contain(temporaryFilters, e.fun.toLowerCase())){
+                temporaryFilters.push(e.fun.toLowerCase());
+            }
+        })
+
+        setFilters(temporaryFilters);
+    }
+
+    //czy element value zawiera sie w tablicy array?
+    const contain = (array:string[], value: string):boolean => {
+        for(let i = 0; i<array.length; i++){
+            if(array[i] === value) return true;
         }
         return false;
     }
 
+    //oblicz dystans pomiedzy punktami
     const calcDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
         if ((lat1 == lat2) && (lon1 == lon2)) {
             return 0;
@@ -120,87 +135,54 @@ export const SimpleMap = () => {
         }
     }
 
-    const select = (checked: boolean, name: string) => {
-        checked
-            ? setFilters([...filters, name])
-            : setFilters(filters.filter(e => e !== name))
+    //otwiera modal zmiany pozycji
+    const changeHomePositionHandle = (value: number[]) => {
+        setOpenChangeHomePositionModal(true);
+        setTemporaryHere([value[1],value[0]]);
     }
 
-    const handleRange = (value: string) => {
-        setRange(value);
-        setFilters([]);
-        setCategories([]);
-    }
-
-    const handleModal = (value: boolean) => {
-        setFiltersModal(value);
+    //zmienia aktualna pozycje
+    const changeHomePosition = () => {
+        setHere(temporaryHere);
+        setOpenChangeHomePositionModal(false);
     }
 
     return (
         <div className={csx.map}>
-            <Icon image={PinYou} height="20" label={`lat: ${Math.round(here[0] * 10000) / 10000}, lng: ${Math.round(here[1] * 10000) / 10000}`} />
+            <Icon 
+                image={PinYou} 
+                height="20" 
+                label={`lat: ${Math.round((here !== null ? here[0] : 0) * 10000) / 10000}, lng: ${Math.round((here !== null ? here[1] : 0) * 10000) / 10000}`}
+            />
 
             <InteractiveMap
                 {...viewport}
                 mapboxApiAccessToken={API_KEY}
                 onViewportChange={nextViewport => setViewport(nextViewport)}
-                onClick={(e) => openModalHomePosition([e.lngLat[1], e.lngLat[0]])}
+                onClick={ (e) => changeHomePositionHandle(e.lngLat)}
             >
+                {/* Aktualne polozenie */}
                 <Point
-                    lat={here[0]}
-                    lng={here[1]}
+                    lat={(here !== null ? here[0] : 0)}
+                    lng={(here !== null ? here[1] : 0)}
                     image={PinYou}
                     imageHeight={"15"}
                     label={["You"]} />
-                {markers.map((e: MarkerItem, index: number) => {
-                    if (contain(e.fun, filters)) {
-                        return (
-                            <Point
-                                key={index}
-                                lat={e.lat}
-                                lng={e.lng}
-                                link={e.name + " " + e.address}
-                                image={PinMonument}
-                                imageHeight={"15"}
-                                label={[
-                                    `${e.fun.charAt(0).toUpperCase()}${e.fun.slice(1)}`,
-                                    `${e.name}`,
-                                    `${e.address}`
-                                ]} />
-                        )
-                    }
-                })}
             </InteractiveMap>
 
-            <Button onClick={() => handleModal(true)} >{`Filters (${categories.length})`}</Button>
-            Range {range}km
-            <input
-                type="range"
-                min="0"
-                max="300"
-                step="10"
-                defaultValue="10"
-                onChange={(e) => handleRange(e.target.value)}
-            />
-            <Modal open={filtersModal} >
-                <FiltersModal
-                    select={select}
-                    monuments={data.length}
-                    markers={markers.length}
-                    categories={categories}
-                    filters={filters.length}
-                    close={() => handleModal(false)}
-                />
-            </Modal>
-            <Modal open={changeHomeModal}>
-                <div className={csx.changeHomeModal} >
-                    {`Change your position`}<br />
-                    {`lat: ${Math.round(tmpHere[0] * 100) / 100} lng: ${Math.round(tmpHere[1] * 100) / 100}?`}
-                    <div>
-                        <Button onClick={() => changeHomePosition()}>Yes</Button>
-                        <Button onClick={() => setChangeHomeModal(false)}>No</Button>
-                    </div>
-                </div>
+            {/*Kontrolka zmiany zasiegu szukania zabytkow */}
+            Range
+            <select onChange={(e)=> changeRange(e.target.value)}>
+                <option selected value="10">10 km</option>
+                {[...Array(9)].map((_, i) => <option value={(10*i+20).toString()}>{10*i+20} km</option>)}
+            </select>
+
+            {/*Modal zmiany pozycji*/}
+            <Modal open = {openChangeHomePositionModal}>
+                <ChangePositionModal 
+                    accept={()=>changeHomePosition()} 
+                    cancel={()=>setOpenChangeHomePositionModal(false)}
+                    label={`${temporaryHere && Math.round(temporaryHere[0]*100)/100}, ${temporaryHere && Math.round(temporaryHere[1]*100)/100}`} />
             </Modal>
         </div >
     );

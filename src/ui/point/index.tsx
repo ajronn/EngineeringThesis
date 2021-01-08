@@ -22,8 +22,8 @@ export const Point = ({ image, imageHeight, lat, lng, link, label }: Props) => {
                     height={imageHeight} />
             </a>
             <div className={csx.label}>
-                {label.map((e: string) => {
-                    return <p>{e}</p>
+                {label.map((e: string, index: number) => {
+                    return <p key={index}>{e}</p>
                 })}
             </div>
         </Marker>

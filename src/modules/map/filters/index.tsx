@@ -9,7 +9,7 @@ interface Props {
     monuments: number,
     markers: number,
     filters: number,
-    categories: string[],
+    categories: {name: string, checked: boolean}[],
     select(evt: boolean, e: string): void
 }
 
@@ -23,11 +23,12 @@ export const FiltersModal = ({ close, monuments, markers, categories, filters, s
                 <p>Types: {filters}/{categories.length}</p>
             </div>
             <div className={csx.filters}>
-                {categories.map((e: string, index: number) =>
+                {categories.map((e: {name: string, checked: boolean}, index: number) =>
                     <CheckBox
                         key={index}
-                        label={e}
-                        onClick={(evt: boolean) => select(evt, e)} />
+                        label={e.name}
+                        onClick={(evt: boolean) => select(evt, e.name)}
+                        value={e.checked} />
                 )}
             </div>
         </div>
