@@ -60,3 +60,49 @@ input[type="range"] {
     background: #9ca1a0;
     border-radius: 10px;
 }
+
+.filtersContainer{
+    z-index: 99;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 600px;
+    background-color:  #c4cbcaa4;
+    text-align: center;
+    padding: 10px;
+
+    p{
+        margin-bottom: 50px;
+    }
+}
+
+.filters{
+    height: 100%;
+    overflow-y: scroll;
+    text-align: left;
+}
+
+.navigation{
+    margin-top: 10px;
+}
+
+select {
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 1px 1px 1px 5px;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: inherit;
+    width: 100px;
+    margin-left: 10px;
+    outline: none;
+
+    &:hover{
+        opacity: 0.5;
+    }
+  }

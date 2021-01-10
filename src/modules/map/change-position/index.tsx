@@ -12,7 +12,7 @@ interface Props {
 export const ChangePositionModal = ({accept, cancel, label}:Props) => {
 
     return (
-        <div>
+        <div className={csx.container} >
             <p>Do you wanna change your home position to {label}?</p>
             <Button onClick={()=>accept()} >Yes</Button>
             <Button onClick={()=>cancel()} >No</Button>

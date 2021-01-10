@@ -12,19 +12,11 @@ import PinMonument from "ui/images/pin_monument.png"
 
 import csx from "./style.scss";
 
-
-type MarkerItem = {
-    lat: number,
-    lng: number,
-    name: string,
-    fun: string
-    address: string
-}
-
 //typ Zabytek
 type Monument = {
     name: string,
     fun: string,
+    address: string
     lat: string,
     lng: string
 }
@@ -42,6 +34,7 @@ export const SimpleMap = () => {
     const [temporaryHere, setTemporaryHere] = useState<null | number[]>(null); //tymczasowa pozycja
     const [range, setRange] = useState<number>(10); //zasieg szukania zabytkow
     const [openChangeHomePositionModal, setOpenChangeHomePositionModal] = useState<boolean>(false); //modal zmiany pozycji
+    const [openFiltersModal, setOpenFiltersModal] = useState<boolean>(false); //modal zmiany filtrow
     const [monuments, setMonuments] = useState<Monument[]>([]); //zabytki w promieniu range
     const [filters, setFilters] = useState<Filter[]>([]); //unikalne funkcje zabytkow monuments
 
@@ -92,7 +85,7 @@ export const SimpleMap = () => {
 
         data.map((e:any) => {
             if(calcDistance(coordsLat,coordsLng, parseFloat(e.lat), parseFloat(e.lng)) <= range){
-                monuments.push({name: e.name, fun: e.fun, lat: e.lat, lng: e.lng});
+                monuments.push({name: e.name, fun: e.fun,address: e.address , lat: e.lat, lng: e.lng});
             }
         })
 
@@ -110,7 +103,7 @@ export const SimpleMap = () => {
             }
         })
 
-        setFilters(temporaryFilters);
+        setFilters(temporaryFilters.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))); //sortowanie listy obiektow wzgledem pola name
     }
 
     //czy element value zawiera sie w tablicy array?
@@ -198,25 +191,41 @@ export const SimpleMap = () => {
                                         lng={parseFloat(e.lng)}
                                         image={PinMonument}
                                         imageHeight={"15"}
-                                        label={[e.name]} />
+                                        label={[e.name, e.fun, e.address]}
+                                        link={`${e.name}%20${e.address}`} />
                         }
                     }
                 })}
             </InteractiveMap>
+            
+            <div className={csx.navigation}>
+                <Button onClick={()=>setOpenFiltersModal(true)} >Filters</Button>
 
-            {/*Kontrolka zmiany zasiegu szukania zabytkow */}
-            Range
-            <select onChange={(e)=> changeRange(e.target.value)}>
-                <option selected value="10">10 km</option>
-                {[...Array(9)].map((_, i) => <option value={(10*i+20).toString()}>{10*i+20} km</option>)}
-            </select>
+                {/*Kontrolka zmiany zasiegu szukania zabytkow */}
+                Range
+                <select onChange={(e)=> changeRange(e.target.value)}>
+                    <option selected value="10">10 km</option>
+                    {[...Array(9)].map((_, i) => <option value={(10*i+20).toString()}>{10*i+20} km</option>)}
+                </select>
+            </div>
 
-            {filters.map((e:Filter)=>{
-                return <CheckBox label={e.name} onChange={(value, name)=>check(value, name)} value={e.checked} />
-            })}
+            {/*Modal filtrow*/}
+            <Modal 
+                onClick={()=>setOpenFiltersModal(false)}
+                open={openFiltersModal}>
+                <div className={csx.filtersContainer}>
+                    <div className={csx.filters}>
+                        {filters.map((e:Filter)=>{
+                            return <CheckBox label={e.name} onChange={(value, name)=>check(value, name)} value={e.checked} />
+                        })}
+                    </div>
+                </div>
+            </Modal>
 
             {/*Modal zmiany pozycji*/}
-            <Modal open = {openChangeHomePositionModal}>
+            <Modal 
+                onClick={()=>setOpenChangeHomePositionModal(false)}
+                open = {openChangeHomePositionModal}>
                 <ChangePositionModal 
                     accept={()=>changeHomePosition()} 
                     cancel={()=>setOpenChangeHomePositionModal(false)}
