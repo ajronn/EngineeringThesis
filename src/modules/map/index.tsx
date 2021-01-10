@@ -4,7 +4,7 @@ import InteractiveMap from 'react-map-gl';
 import { API_KEY } from "utils"
 
 import { CheckBox, Point, Modal, Button, Icon } from "ui"
-import { FiltersModal } from "./filters"
+
 import { ChangePositionModal } from "./change-position"
 
 import PinYou from "ui/images/pin_you.png";
@@ -24,7 +24,14 @@ type MarkerItem = {
 //typ Zabytek
 type Monument = {
     name: string,
-    fun: string
+    fun: string,
+    lat: string,
+    lng: string
+}
+
+//typ Filtr
+type Filter = {
+    name: string,
     checked: boolean
 }
 
@@ -36,7 +43,7 @@ export const SimpleMap = () => {
     const [range, setRange] = useState<number>(10); //zasieg szukania zabytkow
     const [openChangeHomePositionModal, setOpenChangeHomePositionModal] = useState<boolean>(false); //modal zmiany pozycji
     const [monuments, setMonuments] = useState<Monument[]>([]); //zabytki w promieniu range
-    const [filters, setFilters] = useState<string[]>([]); //unikalne funkcje zabytkow monuments
+    const [filters, setFilters] = useState<Filter[]>([]); //unikalne funkcje zabytkow monuments
 
     //zmien promien szukania zabytkow
     const changeRange = (value:string) => {
@@ -85,20 +92,21 @@ export const SimpleMap = () => {
 
         data.map((e:any) => {
             if(calcDistance(coordsLat,coordsLng, parseFloat(e.lat), parseFloat(e.lng)) <= range){
-                monuments.push({name: e.name, fun: e.fun, checked: false});
+                monuments.push({name: e.name, fun: e.fun, lat: e.lat, lng: e.lng});
             }
         })
 
         makeFilters(monuments);
+        setMonuments(monuments)
     }
 
     //stworz liste filtrow na podstawie zabytkow
     const makeFilters = (monuments: Monument[]) => {
-        const temporaryFilters:string[] = [];
+        const temporaryFilters:Filter[] = [];
 
         monuments.map((e:Monument) => {
-            if(!contain(temporaryFilters, e.fun.toLowerCase())){
-                temporaryFilters.push(e.fun.toLowerCase());
+            if(!contain(temporaryFilters.map((e:Filter)=>e.name), e.fun.toLowerCase())){
+                temporaryFilters.push({name: e.fun.toLowerCase(), checked: false});
             }
         })
 
@@ -147,6 +155,18 @@ export const SimpleMap = () => {
         setOpenChangeHomePositionModal(false);
     }
 
+    const check = (value: boolean, name: string) => {
+        let tmp:Filter[] = [];
+        filters.map((e: Filter) => {
+            if(e.name === name){
+                tmp.push({name: e.name, checked: value})
+            } else {
+                tmp.push({name: e.name, checked: e.checked})
+            }
+        })
+        setFilters(tmp)
+    }
+
     return (
         <div className={csx.map}>
             <Icon 
@@ -168,6 +188,20 @@ export const SimpleMap = () => {
                     image={PinYou}
                     imageHeight={"15"}
                     label={["You"]} />
+
+                {/*Zabytki w okregu poszukiwan wedlug filtrow*/}
+                {monuments.map((e:Monument)=> {
+                    for(let i = 0; i<filters.length; i++){
+                        if(e.fun.toLocaleLowerCase() === filters[i].name && filters[i].checked === true){
+                            return <Point 
+                                        lat={parseFloat(e.lat)} 
+                                        lng={parseFloat(e.lng)}
+                                        image={PinMonument}
+                                        imageHeight={"15"}
+                                        label={[e.name]} />
+                        }
+                    }
+                })}
             </InteractiveMap>
 
             {/*Kontrolka zmiany zasiegu szukania zabytkow */}
@@ -176,6 +210,10 @@ export const SimpleMap = () => {
                 <option selected value="10">10 km</option>
                 {[...Array(9)].map((_, i) => <option value={(10*i+20).toString()}>{10*i+20} km</option>)}
             </select>
+
+            {filters.map((e:Filter)=>{
+                return <CheckBox label={e.name} onChange={(value, name)=>check(value, name)} value={e.checked} />
+            })}
 
             {/*Modal zmiany pozycji*/}
             <Modal open = {openChangeHomePositionModal}>
