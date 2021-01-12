@@ -14,6 +14,7 @@ import csx from "./style.scss";
 
 //typ Zabytek
 type Monument = {
+    id: string,
     name: string,
     fun: string,
     address: string
@@ -85,7 +86,7 @@ export const SimpleMap = () => {
 
         data.map((e:any) => {
             if(calcDistance(coordsLat,coordsLng, parseFloat(e.lat), parseFloat(e.lng)) <= range){
-                monuments.push({name: e.name, fun: e.fun,address: e.address , lat: e.lat, lng: e.lng});
+                monuments.push({id: e.id, name: e.name, fun: e.fun,address: e.address , lat: e.lat, lng: e.lng});
             }
         })
 
@@ -186,7 +187,8 @@ export const SimpleMap = () => {
                 {monuments.map((e:Monument)=> {
                     for(let i = 0; i<filters.length; i++){
                         if(e.fun.toLocaleLowerCase() === filters[i].name && filters[i].checked === true){
-                            return <Point 
+                            return <Point
+                                        id={e.id} 
                                         lat={parseFloat(e.lat)} 
                                         lng={parseFloat(e.lng)}
                                         image={PinMonument}

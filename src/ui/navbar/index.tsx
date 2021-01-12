@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import { clearStorage } from "mapbox-gl";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "shared/firebase"
+import {Protected, Unprotected} from "shared/guard"
 
 import csx from "./style.scss"
 
@@ -9,6 +12,7 @@ export interface Item {
 }
 
 export const Navbar = () => {
+    const ctx = useContext(UserContext);
     const [items, setItems] = useState<Item[]>([
         { name: "Home", address: "/" },
         { name: "Map", address: "/map" },
@@ -18,19 +22,30 @@ export const Navbar = () => {
 
     return (
         <div className={csx.navbar}>
-            <ul>
+            <div className={csx.left} >
                 {items.map((e, index) => {
-                    return (
-                        <li
-                            key={index}
-                            style={{ color: "black" }}>
-                            <Link to={e.address}>
-                                {e.name}
-                            </Link>
-                        </li>
-                    )
-                })}
-            </ul>
+                        return (
+                            <div
+                                key={index}
+                                style={{ color: "black" }}>
+                                <Link to={e.address} >
+                                    {e.name}
+                                </Link>
+                            </div>
+                        )
+                    })}
+            </div>
+            <div className={csx.right} >
+                <Unprotected>
+                    <div onClick={ctx.login}>Login</div> 
+                </Unprotected>
+                <Protected>
+                    <>
+                        <div onClick={ctx.logout}>Logout</div>
+                        <img src={ctx.photoURL} />
+                    </>
+                </Protected>
+            </div>
         </div>
     )
 }
