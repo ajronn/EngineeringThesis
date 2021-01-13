@@ -51,15 +51,15 @@ const PinModal = ({link, monumentId}:Props) => {
     return(
         <div className={csx.pinModal} >
             <p>
-                Search in Google<a target="_blank" href={link && GOOGLE_URL + link}><img src={GoogleSearch} /></a>
+                <span className={csx.centered} >Search in Google</span><a target="_blank" href={link && GOOGLE_URL + link}><img src={GoogleSearch} /></a>
             </p>
             <Protected>
                 <>
                     <p>
                         {!isFav ?
-                        <>Add to Favorites<img className={csx.star} src={EmptyHeart} onClick={()=>addToFav()} /></>
+                        <><span className={csx.centered} >Add to Favorites</span><img className={csx.star} src={EmptyHeart} onClick={()=>addToFav()} /></>
                         :
-                        <>Remove from Favorites<img className={csx.star} src={FullHeart} onClick={()=>removeMonumentFromFav()} /></>}
+                        <><span className={csx.centered} >Remove from Favorites</span><img className={csx.star} src={FullHeart} onClick={()=>removeMonumentFromFav()} /></>}
                     </p>
                 </>
             </Protected>

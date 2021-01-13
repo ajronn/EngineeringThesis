@@ -5,13 +5,13 @@
     left: 50%;
     transform: translate(-50%, -50%);
     height: 150px;
-    width: 300px;
+    width: 280px;
     background-color:  #c4cbcaa4;
     text-align: center;
     padding: 10px;
     display: grid;
     display: grid;
-    grid-template-columns: repeat(1fr, 40px);
+    grid-template-columns: repeat(240px, 40px);
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
@@ -36,4 +36,9 @@
       img{
           margin-left: 10px;
       }
+  }
+
+  .centered{
+      text-align: center;
+      width: 100%;
   }

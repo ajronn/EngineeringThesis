@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useMonuments } from "shared/monuments-provider"
 
 import Knight from "../../ui/images/knight1.png";
+import Castle from "../../ui/images/castle.png";
 
 import csx from "./style.scss"
 
@@ -43,7 +44,7 @@ export const Home = () => {
                     </div>
                 </div>
                 <div className={csx.graphic}>
-                    <img src={Knight} />
+                    <img src={Castle}/>
                 </div>
             </div>
 
