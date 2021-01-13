@@ -23,14 +23,12 @@ export const Point = ({ image, imageHeight, lat, lng, link, label, id, onClick, 
     return (
         <>
             <Marker offsetTop={-imageHeight} offsetLeft={-imageHeight / 2} latitude={lat} longitude={lng} >
-                {/* <a target="_blank" href={link && GOOGLE_URL + link}> */}
                     <img src={image}
                         height={imageHeight}
                         onClick={()=>onClick(link, id)} />
-                {/* </a> */}
                 <div className={csx.label}>
                     {label.map((e: string, index: number) => {
-                        return <p key={index}>{e}</p>
+                        return <>{e}<br/></>
                     })}
                 </div>
             </Marker>

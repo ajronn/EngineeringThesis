@@ -13,38 +13,36 @@ export interface Item {
 
 export const Navbar = () => {
     const ctx = useContext(UserContext);
-    const [items, setItems] = useState<Item[]>([
+    const items:Item[] = [
         { name: "Home", address: "/" },
         { name: "Map", address: "/map" },
         { name: "About", address: "/about" },
         { name: "Contact us", address: "/contact" }
-    ])
+    ];
 
     return (
         <div className={csx.navbar}>
             <div className={csx.left} >
                 {items.map((e, index) => {
                         return (
-                            <div
-                                key={index}
-                                style={{ color: "black" }}>
-                                <Link to={e.address} >
+                            <span key={index}>
+                                <Link className={csx.link} to={e.address}  >
                                     {e.name}
                                 </Link>
-                            </div>
-                        )
-                    })}
+                            </span>
+                    )
+                })}
             </div>
             <div className={csx.right} >
-                <Unprotected>
-                    <div onClick={ctx.login}>Login</div> 
-                </Unprotected>
-                <Protected>
-                    <>
-                        <div onClick={ctx.logout}>Logout</div>
-                        <img src={ctx.photoURL} />
-                    </>
-                </Protected>
+                    <Unprotected>
+                        <span onClick={ctx.login}>Login</span> 
+                    </Unprotected>
+                    <Protected>
+                        <>
+                            <span onClick={ctx.logout}>Logout</span>
+                            <span><img src={ctx.photoURL} /></span>
+                        </>
+                    </Protected>
             </div>
         </div>
     )

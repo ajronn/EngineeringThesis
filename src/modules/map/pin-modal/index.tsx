@@ -4,8 +4,8 @@ import {Protected} from "shared/guard"
 import {UserContext} from "shared/firebase"
 
 import GoogleSearch from "ui/images/googlesearch.png"
-import FullStar from "ui/images/fullstar.png"
-import EmptyStar from "ui/images/emptystar.png"
+import FullHeart from "ui/images/fullheart.png"
+import EmptyHeart from "ui/images/emptyheart.png"
 
 import csx from "./style.scss"
 
@@ -21,18 +21,20 @@ const PinModal = ({link, monumentId}:Props) => {
 
     useEffect(() => {
         setIsFav(isFavMonument())
+        console.log('verify')
     }, [monumentId])
 
     const isFavMonument = ():boolean => {
+        let verify = false;
         ctx.monumentRef.on("value", (snap) => {
             const snapshot = snap.val();
             for (let id in snapshot) {
                 if(snapshot[id].id===monumentId && snapshot[id].user === ctx.id)
-                    return true;
+                    verify = true;
             }
         })
 
-        return false;
+        return verify;
     }
 
     const removeMonumentFromFav = () => {
@@ -55,9 +57,9 @@ const PinModal = ({link, monumentId}:Props) => {
                 <>
                     <p>
                         {!isFav ?
-                        <img className={csx.star} src={EmptyStar} onClick={()=>addToFav()} />
+                        <>Add to Favorites<img className={csx.star} src={EmptyHeart} onClick={()=>addToFav()} /></>
                         :
-                        <img className={csx.star} src={FullStar} onClick={()=>removeMonumentFromFav()} />}
+                        <>Remove from Favorites<img className={csx.star} src={FullHeart} onClick={()=>removeMonumentFromFav()} /></>}
                     </p>
                 </>
             </Protected>

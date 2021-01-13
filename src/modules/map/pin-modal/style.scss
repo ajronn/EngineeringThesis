@@ -10,8 +10,11 @@
     text-align: center;
     padding: 10px;
     display: grid;
-    justify-content: center;
-    align-content: center;
+    display: grid;
+    grid-template-columns: repeat(1fr, 40px);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
   }
 
   a{
@@ -27,7 +30,7 @@
   p{
       margin-bottom: 10px;
       display: flex;
-      align-content: center;
+      align-items: center;
       justify-content: flex-end;
 
       img{

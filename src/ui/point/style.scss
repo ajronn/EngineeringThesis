@@ -8,8 +8,10 @@ img {
 .label {
     font-size: 15px;
     text-shadow: -3px 0 white, 0 3px white, 3px 0 white, 0 -3px white;
-    text-align: left;
     display: none;
+    p{
+        text-align: left;
+    }
 }
 
 .modalContainer{

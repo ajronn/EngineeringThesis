@@ -16,7 +16,11 @@ const FiltersModal = ({filters, check}:Props) => {
         <div className={csx.filtersContainer}>
                     <div className={csx.filters}>
                         {filters.map((e:Filter)=>{
-                            return <CheckBox label={e.name} onChange={(value, name)=>check(value, name)} value={e.checked} />
+                            return <CheckBox 
+                                        key={e.name} 
+                                        label={e.name} 
+                                        onChange={(value, name)=>check(value, name)} 
+                                        value={e.checked} />
                         })}
                     </div>
         </div>
