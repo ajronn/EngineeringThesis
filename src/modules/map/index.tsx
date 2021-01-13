@@ -3,9 +3,11 @@ import { useMonuments } from "shared/monuments-provider"
 import InteractiveMap from 'react-map-gl';
 import { API_KEY } from "utils"
 
-import { CheckBox, Point, Modal, Button, Icon } from "ui"
+import { Point, Modal, Button, Icon } from "ui"
 
 import { ChangePositionModal } from "./change-position"
+import FiltersModal from './filters';
+import PinModal from './pin-modal';
 
 import PinYou from "ui/images/pin_you.png";
 import PinMonument from "ui/images/pin_monument.png"
@@ -19,7 +21,8 @@ type Monument = {
     fun: string,
     address: string
     lat: string,
-    lng: string
+    lng: string,
+    fav: boolean,
 }
 
 //typ Filtr
@@ -36,8 +39,11 @@ export const SimpleMap = () => {
     const [range, setRange] = useState<number>(10); //zasieg szukania zabytkow
     const [openChangeHomePositionModal, setOpenChangeHomePositionModal] = useState<boolean>(false); //modal zmiany pozycji
     const [openFiltersModal, setOpenFiltersModal] = useState<boolean>(false); //modal zmiany filtrow
+    const [openPinModal, setOpenPinModal] = useState<boolean>(false); //modal pinezki
     const [monuments, setMonuments] = useState<Monument[]>([]); //zabytki w promieniu range
     const [filters, setFilters] = useState<Filter[]>([]); //unikalne funkcje zabytkow monuments
+    const [currentLink, setCurrentLink] = useState<string>('');
+    const [currentMonumentId, setCurrentMonumentId] = useState<string>('');
 
     //zmien promien szukania zabytkow
     const changeRange = (value:string) => {
@@ -86,7 +92,7 @@ export const SimpleMap = () => {
 
         data.map((e:any) => {
             if(calcDistance(coordsLat,coordsLng, parseFloat(e.lat), parseFloat(e.lng)) <= range){
-                monuments.push({id: e.id, name: e.name, fun: e.fun,address: e.address , lat: e.lat, lng: e.lng});
+                monuments.push({id: e.id, name: e.name, fun: e.fun,address: e.address , lat: e.lat, lng: e.lng, fav: false});
             }
         })
 
@@ -149,6 +155,7 @@ export const SimpleMap = () => {
         setOpenChangeHomePositionModal(false);
     }
 
+    //zmienia wartosc checkboxow
     const check = (value: boolean, name: string) => {
         let tmp:Filter[] = [];
         filters.map((e: Filter) => {
@@ -159,6 +166,13 @@ export const SimpleMap = () => {
             }
         })
         setFilters(tmp)
+    }
+
+    //otwiera modal pinezki
+    const openPinModalHandle = (link:string, id:string) => {
+        setOpenPinModal(true);
+        setCurrentLink(link)
+        setCurrentMonumentId(id)
     }
 
     return (
@@ -181,7 +195,8 @@ export const SimpleMap = () => {
                     lng={(here !== null ? here[1] : 0)}
                     image={PinYou}
                     imageHeight={"15"}
-                    label={["You"]} />
+                    label={["You"]}
+                    fav={false} />
 
                 {/*Zabytki w okregu poszukiwan wedlug filtrow*/}
                 {monuments.map((e:Monument)=> {
@@ -194,7 +209,9 @@ export const SimpleMap = () => {
                                         image={PinMonument}
                                         imageHeight={"15"}
                                         label={[e.name, e.fun, e.address]}
-                                        link={`${e.name}%20${e.address}`} />
+                                        link={`${e.name}%20${e.address}`}
+                                        onClick={(link:string, id: string)=>openPinModalHandle(link, id)}
+                                        fav={e.fav} />
                         }
                     }
                 })}
@@ -215,13 +232,9 @@ export const SimpleMap = () => {
             <Modal 
                 onClick={()=>setOpenFiltersModal(false)}
                 open={openFiltersModal}>
-                <div className={csx.filtersContainer}>
-                    <div className={csx.filters}>
-                        {filters.map((e:Filter)=>{
-                            return <CheckBox label={e.name} onChange={(value, name)=>check(value, name)} value={e.checked} />
-                        })}
-                    </div>
-                </div>
+                <FiltersModal 
+                    filters={filters}
+                    check={check} />
             </Modal>
 
             {/*Modal zmiany pozycji*/}
@@ -233,6 +246,15 @@ export const SimpleMap = () => {
                     cancel={()=>setOpenChangeHomePositionModal(false)}
                     label={`${temporaryHere && Math.round(temporaryHere[0]*100)/100}, ${temporaryHere && Math.round(temporaryHere[1]*100)/100}`} />
             </Modal>
+            
+            {/*Modal pinezki*/}
+            <Modal open={openPinModal} onClick={()=>setOpenPinModal(false)} >
+                <PinModal
+                    link={currentLink}
+                    monumentId={currentMonumentId} />
+            </Modal>
         </div >
     );
 }
+
+export type {Filter};

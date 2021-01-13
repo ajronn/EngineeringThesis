@@ -10,16 +10,20 @@ interface User {
 export const UserContext = createContext({
     login: () => { },
     logout: () => { },
+    addMonumentToFav: (id: string) => {},
+    removeFromFav: (id: string) => {},
     id: "",
     email: "",
     name: "",
     photoURL: "",
     isLogged: false,
+    monumentRef: firebase.database().ref('Fav')
 });
 
 const UserProvider = (props:any) => {
     const [isLogged, setIsLogged] = useState(false);
     const ref = firebase.database().ref('Users');
+    const refFav = firebase.database().ref('Fav');
     const [currentUser, setCurrentUser] = useState(null);
     const [users, setUsers] = useState([]);
 
@@ -51,6 +55,22 @@ const UserProvider = (props:any) => {
         return true;
     }
 
+    const removeFromFav = (monumentId:string) => {
+        let myId = '';
+        firebase.database().ref('Fav').on("value", (snap) => {
+            const snapshot = snap.val();
+            for (let id in snapshot) {
+                if(snapshot[id].id === monumentId && snapshot[id].user === currentUser.uid)
+                    myId = id;
+            }
+        })
+        firebase.database().ref('Fav').child(myId).remove();
+    }
+
+    const addMonumentToFav = (monumentId: string) => {
+        firebase.database().ref('Fav').push({ id: monumentId, user: currentUser.uid, field: Math.random() });
+    }
+
     const addUser = (ref: firebase.database.Reference, id: string, name: string) => {
         ref.push({ id: id, name: name });
     }
@@ -70,11 +90,14 @@ const UserProvider = (props:any) => {
     const data = {
         login: login,
         logout: logoutUser,
+        addMonumentToFav: addMonumentToFav,
+        removeFromFav: removeFromFav,
         id: currentUser ? currentUser.uid : "",
         email: currentUser ? currentUser.emial : "",
         name: currentUser ? currentUser.displayName : "",
         photoURL: currentUser ? currentUser.photoURL : "",
         isLogged: isLogged,
+        monumentRef: firebase.database().ref('Fav')
     };
 
     return (
@@ -84,3 +107,4 @@ const UserProvider = (props:any) => {
     )
 }
 export default UserProvider;
+
