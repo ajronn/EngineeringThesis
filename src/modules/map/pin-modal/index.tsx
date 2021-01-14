@@ -11,10 +11,19 @@ import csx from "./style.scss"
 
 interface Props {
     link: string,
-    monumentId: string
+    monument: {
+        id: string,
+        name: string,
+        fun: string,
+        town: string,
+        address: string,
+        lat: string,
+        lng: string,
+        fav: boolean,
+    },
 }
 
-const PinModal = ({link, monumentId}:Props) => {
+const PinModal = ({link, monument}:Props) => {
     const ctx = useContext(UserContext);
     const [isFav, setIsFav] = useState(false);
     const GOOGLE_URL = "http://www.google.com.pk/search?btnG=1&pws=0&q=";
@@ -22,14 +31,14 @@ const PinModal = ({link, monumentId}:Props) => {
     useEffect(() => {
         setIsFav(isFavMonument())
         console.log('verify')
-    }, [monumentId])
+    }, [monument.id])
 
     const isFavMonument = ():boolean => {
         let verify = false;
         ctx.monumentRef.on("value", (snap) => {
             const snapshot = snap.val();
             for (let id in snapshot) {
-                if(snapshot[id].id===monumentId && snapshot[id].user === ctx.id)
+                if(snapshot[id].id===monument.id && snapshot[id].user === ctx.id)
                     verify = true;
             }
         })
@@ -38,13 +47,15 @@ const PinModal = ({link, monumentId}:Props) => {
     }
 
     const removeMonumentFromFav = () => {
-        ctx.removeFromFav(monumentId);
+        ctx.removeFromFav(monument.id);
+        ctx.loadFavourites();
         setIsFav(false)
         
     }
 
     const addToFav = () => {
-        ctx.addMonumentToFav(monumentId);
+        ctx.addMonumentToFav(monument.id, monument.name, monument.fun, monument.town, monument.address);
+        ctx.loadFavourites();
         setIsFav(true)
     }
     

@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useMonuments } from "shared/monuments-provider"
 import InteractiveMap from 'react-map-gl';
 import { API_KEY } from "utils"
+import {UserContext } from "shared/firebase"
+import {Protected } from "shared/guard"
 
 import { Point, Modal, Button, Icon } from "ui"
 
 import { ChangePositionModal } from "./change-position"
 import FiltersModal from './filters';
 import PinModal from './pin-modal';
+import FullHeart from "ui/images/fullheart.png"
 
 import PinYou from "ui/images/pin_you.png";
 import PinMonument from "ui/images/pin_monument.png"
@@ -19,7 +22,8 @@ type Monument = {
     id: string,
     name: string,
     fun: string,
-    address: string
+    town: string,
+    address: string,
     lat: string,
     lng: string,
     fav: boolean,
@@ -33,6 +37,7 @@ type Filter = {
 
 export const SimpleMap = () => {
     const { data } = useMonuments(); //baza zabytkow
+    const ctx = useContext(UserContext);
 
     const [here, setHere] = useState<null | number[]>(null); //aktualna pozycja
     const [temporaryHere, setTemporaryHere] = useState<null | number[]>(null); //tymczasowa pozycja
@@ -43,7 +48,16 @@ export const SimpleMap = () => {
     const [monuments, setMonuments] = useState<Monument[]>([]); //zabytki w promieniu range
     const [filters, setFilters] = useState<Filter[]>([]); //unikalne funkcje zabytkow monuments
     const [currentLink, setCurrentLink] = useState<string>('');
-    const [currentMonumentId, setCurrentMonumentId] = useState<string>('');
+    const [currentMonument, setCurrentMonument] = useState<Monument>({
+        id: '',
+        name: '',
+        fun: '',
+        address: '',
+        town: '',
+        lat: '',
+        lng: '',
+        fav: false,
+    });
 
     //zmien promien szukania zabytkow
     const changeRange = (value:string) => {
@@ -92,7 +106,7 @@ export const SimpleMap = () => {
 
         data.map((e:any) => {
             if(calcDistance(coordsLat,coordsLng, parseFloat(e.lat), parseFloat(e.lng)) <= range){
-                monuments.push({id: e.id, name: e.name, fun: e.fun,address: e.address , lat: e.lat, lng: e.lng, fav: false});
+                monuments.push({id: e.id, name: e.name, fun: e.fun, town: e.town,address: e.address , lat: e.lat, lng: e.lng, fav: false});
             }
         })
 
@@ -169,10 +183,19 @@ export const SimpleMap = () => {
     }
 
     //otwiera modal pinezki
-    const openPinModalHandle = (link:string, id:string) => {
+    const openPinModalHandle = (link:string, id:string, name: string, fun: string, town: string, address: string, lat: string, lng: string, fav: boolean) => {
         setOpenPinModal(true);
         setCurrentLink(link)
-        setCurrentMonumentId(id)
+        setCurrentMonument({
+            id: id,
+            name: name,
+            fun: fun,
+            address: address,
+            town: town,
+            lat: lat,
+            lng: lng,
+            fav: fav,
+        })
     }
 
     return (
@@ -210,7 +233,7 @@ export const SimpleMap = () => {
                                         imageHeight={"15"}
                                         label={[e.name, e.fun, e.address]}
                                         link={`${e.name}%20${e.address}`}
-                                        onClick={(link:string, id: string)=>openPinModalHandle(link, id)}
+                                        onClick={(link:string, id: string)=>openPinModalHandle(link, id, e.name, e.fun, e.town, e.address, e.lat, e.lng, e.fav)}
                                         fav={e.fav} />
                         }
                     }
@@ -227,6 +250,29 @@ export const SimpleMap = () => {
                     {[...Array(9)].map((_, i) => <option value={(10*i+20).toString()}>{10*i+20} km</option>)}
                 </select>
             </div>
+            <Protected>
+                {ctx.favourites.length > 0 &&
+                <div className={csx.fav} >
+                    <p>Added to <img src={FullHeart} height='25' /> :</p>
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Function</th>
+                            <th>Town</th>
+                            <th>Address</th>
+                        </tr>
+                        {ctx.favourites.map((e:Monument) => {
+                            return <tr>
+                                <th>{e.name}</th>
+                                <th>{e.fun}</th>
+                                <th>{e.town}</th>
+                                <th>{e.address.replace(e.town, '')}</th>
+                            </tr>
+                        })}
+                    </table>
+                </div>
+                }
+            </Protected>
 
             {/*Modal filtrow*/}
             <Modal 
@@ -251,7 +297,7 @@ export const SimpleMap = () => {
             <Modal open={openPinModal} onClick={()=>setOpenPinModal(false)} >
                 <PinModal
                     link={currentLink}
-                    monumentId={currentMonumentId} />
+                    monument={currentMonument} />
             </Modal>
         </div >
     );

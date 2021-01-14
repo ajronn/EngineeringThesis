@@ -7,9 +7,16 @@
     font-size: 15px;
     font-weight: 400;
     margin: 5px;
+    font-family: "Texturina", serif;
+    font-size: 18px;
     cursor: pointer;
 
     &:hover {
         opacity: 0.9;
     }
+}
+
+.large{
+    width: 250px;
+    height: 35px;
 }

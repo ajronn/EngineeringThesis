@@ -7,14 +7,12 @@
 .content {
     grid-area: content;
     width: 100%;
-    height: calc(100vh - 80px);
     display: grid;
-    justify-content: center;
     text-align: justify;
-    padding: 50px 25px 0 25px;
+    padding: 50px 15% 0 15%;
 
     h1 {
-        text-align: center;
+        text-align: left;
         margin-bottom: 10px;
     }
 
@@ -26,7 +24,6 @@
 .graphic {
     grid-area: graphics;
     width: 100%;
-    height: calc(100vh - 80px);
     display: grid;
     justify-content: center;
     align-items: center;
@@ -35,4 +32,18 @@
         margin: 0 auto;
         width: 80%;
     }
+}
+
+.unprotectedText{
+    margin-top: 50px;
+    P{
+        text-indent: 0;
+        width: 50%;
+    }
+}
+
+.centered{
+    margin-top: 50px;
+    display: grid;
+    justify-content: center;
 }

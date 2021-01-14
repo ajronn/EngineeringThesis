@@ -1,6 +1,19 @@
 .map {
     margin: 0 auto;
     width: 1200px;
+
+    table{
+        width: 100%;
+    }
+
+    th{
+        width: 25%;
+    }
+
+    table, th, tr {
+        border: 1px solid black;
+      }
+
 }
 
 a {
@@ -83,4 +96,15 @@ select {
     &:hover{
         opacity: 0.5;
     }
+  }
+
+  .fav{
+      p{
+          display: flex;
+          justify-content: left;
+        
+          img{
+            margin-right: 5px;
+          }
+      }
   }
