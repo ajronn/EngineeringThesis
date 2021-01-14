@@ -10,10 +10,10 @@ import { Point, Modal, Button, Icon } from "ui"
 import { ChangePositionModal } from "./change-position"
 import FiltersModal from './filters';
 import PinModal from './pin-modal';
-import FullHeart from "ui/images/fullheart.png"
 
 import PinYou from "ui/images/pin_you.png";
 import PinMonument from "ui/images/pin_monument.png"
+import FullHeart from "ui/images/fullheart.png"
 
 import csx from "./style.scss";
 

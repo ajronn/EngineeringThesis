@@ -1,8 +1,9 @@
-import { clearStorage } from "mapbox-gl";
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "shared/firebase"
 import {Protected, Unprotected} from "shared/guard"
+
+import FullHeart from "ui/images/fullheart.png"
 
 import csx from "./style.scss"
 
@@ -13,6 +14,8 @@ export interface Item {
 
 export const Navbar = () => {
     const ctx = useContext(UserContext);
+    const [openPopup, setOpenPopup] = useState(false);
+
     const items:Item[] = [
         { name: "Home", address: "/" },
         { name: "Map", address: "/map" },
@@ -40,7 +43,12 @@ export const Navbar = () => {
                     <Protected>
                         <>
                             <span onClick={ctx.logout}>Logout</span>
-                            <span><img src={ctx.photoURL} /></span>
+                            <span className={csx.popupContainer} >
+                                <img onClick={()=>setOpenPopup((state)=>!state)} src={ctx.photoURL}/>
+                                    <div className={`${csx.popup} ${!openPopup && csx.popupClose}`} >
+                                        <p><img src={FullHeart} />{ctx.favourites.length}</p>
+                                    </div>
+                                </span>
                         </>
                     </Protected>
             </div>
