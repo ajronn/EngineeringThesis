@@ -14,6 +14,7 @@ import PinModal from './pin-modal';
 import PinYou from "ui/images/pin_you.png";
 import PinMonument from "ui/images/pin_monument.png"
 import FullHeart from "ui/images/fullheart.png"
+import Share from "ui/images/share.png"
 
 import csx from "./style.scss";
 
@@ -239,8 +240,12 @@ export const SimpleMap = () => {
                     }
                 })}
             </InteractiveMap>
-            
+
             <div className={csx.navigation}>
+                <Protected>
+                    {/*Przycisk udostepniania zabytkow */}
+                    <img src={Share} height='20' onClick={()=>ctx.shareMonuments()} />
+                </Protected>
                 <Button onClick={()=>setOpenFiltersModal(true)} >Filters</Button>
 
                 {/*Kontrolka zmiany zasiegu szukania zabytkow */}

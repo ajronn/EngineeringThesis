@@ -7,12 +7,23 @@ interface User {
     name: string
 }
 
+type FavMonument = {
+    id: string,
+    name: string,
+    fun: string,
+    address: string,
+    town: string,
+}
+
 export const UserContext = createContext({
     login: () => { },
     logout: () => { },
     addMonumentToFav: (monumentId: string,  name: string, fun: string, town: string, address: string) => {},
     removeFromFav: (id: string) => {},
     loadFavourites: () => {},
+    shareMonuments: () => {},
+    loadFavMonuments: (url: string) => {},
+    currentFavMonument: [],
     id: "",
     email: "",
     name: "",
@@ -29,6 +40,7 @@ const UserProvider = (props:any) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [users, setUsers] = useState([]);
     const [favourites, setFavourites] = useState<any[]>([]);
+    const [currentFavMonument, setCurrentFavMonument] = useState<FavMonument[]>([]);
 
     useEffect(() => {
         auth.onAuthStateChanged((user) => {
@@ -74,6 +86,29 @@ const UserProvider = (props:any) => {
         firebase.database().ref('Fav').child(myId).remove();
     }
 
+    const loadFavMonuments = (url: string) => {
+        let array:FavMonument[] = [];
+        let monuments = [];
+        firebase.database().ref('Share').on("value", (snap) => {
+            const snapshot = snap.val();
+            for (let id in snapshot) {
+                if(id === url){
+                    for(let item in snapshot[id].monuments){
+                        array.push({
+                            id: snapshot[id].monuments[item].id,
+                            name: snapshot[id].monuments[item].name,
+                            fun: snapshot[id].monuments[item].fun,
+                            address: snapshot[id].monuments[item].address,
+                            town: snapshot[id].monuments[item].town
+                        })
+                    }
+                }
+            }
+        })
+
+        setCurrentFavMonument(array);
+    }
+
     const loadFavourites = () => {
         const array:any[] = [];
         firebase.database().ref('Fav').on("value", (snap) => {
@@ -106,12 +141,48 @@ const UserProvider = (props:any) => {
         setIsLogged(false);
     }
 
+    const shareMonuments = () => {
+        let myId = '';
+        let url = '';
+        firebase.database().ref('Share').on("value", (snap) => {
+            const snapshot = snap.val();
+            for (let id in snapshot) {
+                if(snapshot[id].user === currentUser.uid){
+                    myId = id;
+                }
+                    
+            }
+        })
+        if(myId !== '') firebase.database().ref('Share').child(myId).remove();
+        firebase.database().ref('Share').push({  user: currentUser.uid, monuments: favourites });
+
+        firebase.database().ref('Share').on("value", (snap) => {
+            const snapshot = snap.val();
+            for (let id in snapshot) {
+                if(snapshot[id].user === currentUser.uid){
+                    url = id;
+                }
+                    
+            }
+        })
+
+        const el = document.createElement('textarea');
+        el.value = url;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+
     const data = {
         login: login,
         logout: logoutUser,
         addMonumentToFav: addMonumentToFav,
         removeFromFav: removeFromFav,
         loadFavourites: loadFavourites,
+        shareMonuments: shareMonuments,
+        loadFavMonuments: loadFavMonuments,
+        currentFavMonument: currentFavMonument,
         id: currentUser ? currentUser.uid : "",
         email: currentUser ? currentUser.emial : "",
         name: currentUser ? currentUser.displayName : "",
