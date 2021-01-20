@@ -3,6 +3,8 @@ import {Protected, Unprotected} from "shared/guard"
 import {UserContext} from "shared/firebase"
 import { Link } from "react-router-dom";
 
+import {useAlertsProvider} from "shared/alerts-provider"
+
 import {Button} from "ui";
 
 import Castle from "../../ui/images/castle.png";
@@ -11,7 +13,7 @@ import csx from "./style.scss"
 
 export const Home = () => {
     const ctx = useContext(UserContext);
-
+    const alertCtx = useAlertsProvider();
     return (
         <>
             <div className={csx.home}>
@@ -42,6 +44,7 @@ export const Home = () => {
                             </p>
                             <div className={csx.centered} >
                                 <Button onClick={ctx.login} variant='large' >Login</Button>
+                                <Button onClick={()=>alertCtx.addAlert("hello")} variant='large' >Alert</Button>
                             </div>
                         </div>
                     </Unprotected>

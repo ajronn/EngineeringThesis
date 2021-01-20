@@ -1,5 +1,25 @@
 .shareContainer{
     width: 100%;
-    display: grid;
-    justify-content: center;
+    padding-top: 100px;
+    min-height: 500px;
+
+    h1{
+        text-align: center;
+    }
+
+    img{
+        margin: 0 auto !important;
+        width: 100px;
+        height: 100px;
+    }
+
+    table{
+        margin: 0 auto;
+        margin-top: 20px;
+
+        th{
+            width: 200px;
+            border: 2px solid black;
+        }
+    }
 }
