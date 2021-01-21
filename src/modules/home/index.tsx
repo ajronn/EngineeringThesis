@@ -2,7 +2,6 @@ import React, {useContext} from "react";
 import {Protected, Unprotected} from "shared/guard"
 import {UserContext} from "shared/firebase"
 import { Link } from "react-router-dom";
-import {useAlerts} from "shared/alerts-provider"
 
 import {Button} from "ui";
 
@@ -12,7 +11,6 @@ import csx from "./style.scss"
 
 export const Home = () => {
     const ctx = useContext(UserContext);
-    const {addAlert} = useAlerts();
 
     return (
         <>
@@ -52,7 +50,6 @@ export const Home = () => {
                 <div className={csx.graphic}>
                     <img src={Castle}/>
                 </div>
-                <button onClick={()=>addAlert("alert1")} >KLIK</button>
             </div>
         </>
 

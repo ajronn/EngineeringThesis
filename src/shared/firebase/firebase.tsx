@@ -1,6 +1,7 @@
 import React, { useState, createContext, useEffect } from 'react'
 import { signInWithGoogle, auth } from './utils';
 import firebase from "./utils"
+import { useAlerts } from "shared/alerts-provider"
 
 interface User {
     id: string,
@@ -23,7 +24,7 @@ export const UserContext = createContext({
     loadFavourites: () => { },
     shareMonuments: () => { },
     loadFavMonuments: (url: string) => { },
-    currentFavMonument: {monuments: [], user: ""},
+    currentFavMonument: { monuments: [], user: "" },
     id: "",
     email: "",
     name: "",
@@ -39,7 +40,9 @@ const UserProvider = (props: any) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [users, setUsers] = useState([]);
     const [favourites, setFavourites] = useState<any[]>([]);
-    const [currentFavMonument, setCurrentFavMonument] = useState<{monuments: FavMonument[], user: string}>({monuments: [], user: ""});
+    const [currentFavMonument, setCurrentFavMonument] = useState<{ monuments: FavMonument[], user: string }>({ monuments: [], user: "" });
+    const { addAlert } = useAlerts();
+    const [keys, setKeys] = useState<string[]>([]);
 
     useEffect(() => {
         auth.onAuthStateChanged((user) => {
@@ -87,12 +90,11 @@ const UserProvider = (props: any) => {
 
     const loadFavMonuments = (url: string) => {
         let array: FavMonument[] = [];
-        let monuments = [];
         let u = "";
         firebase.database().ref('Share').on("value", (snap) => {
             const snapshot = snap.val();
             for (let id in snapshot) {
-                if (id === url) {
+                if (snapshot[id].url === url) {
                     u = snapshot[id].userName;
                     for (let item in snapshot[id].monuments) {
                         array.push({
@@ -107,7 +109,7 @@ const UserProvider = (props: any) => {
             }
         })
 
-        setCurrentFavMonument({monuments: array, user: u});
+        setCurrentFavMonument({ monuments: array, user: u });
     }
 
     const loadFavourites = () => {
@@ -131,6 +133,15 @@ const UserProvider = (props: any) => {
     }
 
     const login = () => signInWithGoogle().then((u) => {
+        let keys: string[] = [];
+        firebase.database().ref('Share').on("value", (snap) => {
+            const snapshot = snap.val();
+            for (let id in snapshot) {
+                keys.push(snapshot[id].url);
+            }
+        })
+        setKeys(keys);
+
         if (validateUser(users, u.user.uid)) {
             addUser(ref, u.user.uid, u.user.displayName);
         }
@@ -142,9 +153,30 @@ const UserProvider = (props: any) => {
         setIsLogged(false);
     }
 
+    const generateKey = () => {
+        let key = '';
+        let check = true;
+        do {
+            key = Math.floor(Math.random() * (100000000)).toString();
+            if (checkKey(key)) {
+                check = false;
+            }
+        } while (check)
+        return key;
+    }
+
+    const checkKey = (key: string): boolean => {
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i] === key) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     const shareMonuments = () => {
         let myId = '';
-        let url = '';
+        let url = generateKey();
         firebase.database().ref('Share').on("value", (snap) => {
             const snapshot = snap.val();
             for (let id in snapshot) {
@@ -155,28 +187,16 @@ const UserProvider = (props: any) => {
             }
         })
         if (myId !== '') firebase.database().ref('Share').child(myId).remove();
-        firebase.database().ref('Share').push({ user: currentUser.uid, userName: currentUser.displayName , monuments: favourites });
+        firebase.database().ref('Share').push({ user: currentUser.uid, userName: currentUser.displayName, monuments: favourites, url: url });
 
-        firebase.database().ref('Share').on("value", (snap) => {
-            const snapshot = snap.val();
-            for (let id in snapshot) {
-                if (snapshot[id].user === currentUser.uid) {
-                    url = id;
-                }
-
-            }
-        })
-
-        if(url !== ''){
-            const currentUrl = window.location.href.replace(window.location.pathname, '/share/')+url;
-            const el = document.createElement('textarea');
-            el.value = currentUrl;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            alert("Url "+currentUrl+" was copied!");
-        }
+        const currentUrl = window.location.href.replace(window.location.pathname, '/share/') + url;
+        const el = document.createElement('textarea');
+        el.value = currentUrl;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        addAlert(`Url "${currentUrl}" was copied!`);
     }
 
     const data = {
