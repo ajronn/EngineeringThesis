@@ -1,60 +1,49 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { createContext, useContext } from "react";
 
-import { Alert } from "ui"
-
-namespace AlertsProvider {
-
-    export type AlertType = {
-        id: number,
-        text: string
-    }
-
-    export interface State {
-        alerts: AlertType[],
-        addAlert: (text: string) => void
-    }
-
-    export interface Props {
-        children: ReactNode;
-    }
+interface Props {
+    children: React.ReactNode
 }
 
-const STATE: AlertsProvider.State = {
-    alerts: [],
-    addAlert: (text: string) => { }
-};
+type Alert = {
+    id: number,
+    message: string
+}
 
-const Context = createContext(STATE);
+interface STATE {
+    data: Alert[],
+    addAlert: (e: any) => void
+}
 
-class Provider extends React.Component<AlertsProvider.Props, typeof STATE> {
+const st: STATE = {
+    data: [],
+    addAlert: (e: any) => { }
+}
 
-    constructor(props:any){
-        super(props);
-        this.state = {
-            alerts: [],
-            addAlert: this.addAlert
-        };
+const Context = createContext(st)
 
-        this.addAlert = this.addAlert.bind(this);
+class AlertsProvider extends React.Component<Props, STATE> {
+
+    addAlert = (msg: string) => {
+        this.setState({data: [...this.state.data, {id: 0, message: msg}]});
+        console.log(this.state.data);
     }
 
-    addAlert(text: string) {
-        // this.setState({ alerts: [...this.state.alerts, { id: 0, text: text }] });
-        console.log(this.state)
+    state: STATE = {
+        data: [{ id: 0, message: "hello" }],
+        addAlert: this.addAlert
     }
 
-    render = (): JSX.Element => (
-        <Context.Provider value={this.state}>
-            {this.state.alerts.map((e:AlertsProvider.AlertType)=>{
-                return <Alert text={e.text} />
-            })}
-            {this.props.children}
+    render() {
+        return (
+            <Context.Provider value={this.state}>
+                {this.props.children}
             </Context.Provider>
-    );
+        )
+    }
 }
 
-const AlertsProvider = Provider;
-
-export const useAlertsProvider = (): AlertsProvider.State => useContext(Context);
+export const useAlerts = () => {
+    return useContext(Context);
+}
 
 export default AlertsProvider;

@@ -20,13 +20,14 @@ export const Share = () => {
 
     useEffect(() => {
         ctx.loadFavMonuments(match.id);
-        setItems(ctx.currentFavMonument);
+        setItems(ctx.currentFavMonument.monuments);
     }, [timer])
 
     return (
         <div className={csx.shareContainer} >
             {items.length === 0 ? <Loader /> :
                 <>
+                <h1>User: {ctx.currentFavMonument.user}</h1>
                     <h1>Shared monuments:</h1>
                     <table>
                     <tr><th>Name</th><th>Function</th><th>Address</th><th>Town</th></tr>

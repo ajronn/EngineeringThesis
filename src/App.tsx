@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MonumentsProvider from "shared/monuments-provider"
-import { UserProvider } from "shared/firebase"
 import AlertsProvider from "shared/alerts-provider"
+import { UserProvider } from "shared/firebase"
 
 import { Home, SimpleMap, Share } from "modules";
 import { Navbar } from "ui";
 
 export const App = () => {
+
     return (
         <AlertsProvider>
             <UserProvider>
