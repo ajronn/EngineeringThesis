@@ -133,6 +133,7 @@ const UserProvider = (props: any) => {
     }
 
     const login = () => signInWithGoogle().then((u) => {
+        console.log(u)
         let keys: string[] = [];
         firebase.database().ref('Share').on("value", (snap) => {
             const snapshot = snap.val();
@@ -146,7 +147,7 @@ const UserProvider = (props: any) => {
             addUser(ref, u.user.uid, u.user.displayName);
         }
         setIsLogged(true);
-    }).then(() => { });
+    }).then(() => addAlert('You have been logged in!'));
 
     const logoutUser = () => {
         auth.signOut();
