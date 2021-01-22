@@ -4,7 +4,7 @@ import MonumentsProvider from "shared/monuments-provider"
 import AlertsProvider from "shared/alerts-provider"
 import { UserProvider } from "shared/firebase"
 
-import { Home, SimpleMap, Share } from "modules";
+import { Home, SimpleMap, Share, About } from "modules";
 import { Navbar } from "ui";
 
 export const App = () => {
@@ -23,7 +23,7 @@ export const App = () => {
                                 <SimpleMap />
                             </Route>
                             <Route path="/about" exact>
-                                <h1>About</h1>
+                                <About />
                             </Route>
                             <Route path="/share/:id" exact>
                                 <Share />
